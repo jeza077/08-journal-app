@@ -1,6 +1,7 @@
+import { signInWithEmailAndPassword, signOut } from "@firebase/auth";
 import { 
-    getAuth, 
-    app, 
+    // getAuth, 
+    // app, 
     googleAuthProvider, 
     signInWithPopup, 
     auth, 
@@ -8,16 +9,29 @@ import {
     updateProfile
 } from "../firebase/firebaseConfig";
 import { types } from "../types/types";
+import { finishLoading, startLoading } from "./ui";
+
+
 
 export const startLoginEmailPassword = (email, password) => {
 
     return (dispatch) => {
 
-        setTimeout(() => {
-            
-            dispatch( login(123, 'Pedro') );
+        dispatch( startLoading() );
 
-        }, 3500);
+        signInWithEmailAndPassword(auth, email, password)
+            .then( ({user}) => {                
+                dispatch( login( user.uid, user.displayName ) );  
+
+                dispatch( finishLoading() );
+
+            })
+            .catch( err => {
+                console.log(err);
+                dispatch( finishLoading() );
+            })
+
+        // dispatch( login(123, 'Pedro') );
 
     }
 }
@@ -68,7 +82,6 @@ export const login = (uid, displayName) => ({
     }
     
 })
-
 /* Forma larga del Return
 
 export const login = (uid, displayName) => {
@@ -81,3 +94,15 @@ export const login = (uid, displayName) => {
     }
 }
 */
+
+export const startLogout = () => {
+    return async(dispatch) => {
+        await signOut(auth);
+
+        dispatch( logout() );
+    }
+}
+
+export const logout = () => ({
+    type: types.logout
+})
