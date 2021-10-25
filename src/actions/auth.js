@@ -1,3 +1,5 @@
+import Swal from 'sweetalert2';
+
 import { signInWithEmailAndPassword, signOut } from "@firebase/auth";
 import { 
     // getAuth, 
@@ -27,8 +29,11 @@ export const startLoginEmailPassword = (email, password) => {
 
             })
             .catch( err => {
-                console.log(err);
                 dispatch( finishLoading() );
+                Swal.fire(
+                    'Error', 
+                    'There is no user record corresponding to this identifier. The user may have been deleted.', 
+                    'error');
             })
 
         // dispatch( login(123, 'Pedro') );
@@ -54,7 +59,11 @@ export const startRegisterWithEmailPasswordName = ( email, password, name ) => {
 
             })
             .catch( err => {
-                console.log(err);
+                // console.log(err);
+                Swal.fire(
+                    'Error', 
+                    'There is no user record corresponding to this identifier. The user may have been deleted.', 
+                    'error');
             })
     }
 
