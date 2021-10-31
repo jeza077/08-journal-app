@@ -1,5 +1,6 @@
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from '../firebase/firebaseConfig';
+import { types } from '../types/types';
 
 
 export const startNewNote = () => {
@@ -14,11 +15,26 @@ export const startNewNote = () => {
         }
 
         try {
-            const docRef = await setDoc(doc(collection(db, uid, "journal", "notes")), newNote); //Añadir: Coleccion - Documento - Coleccion - Documento - Coleccion
-            console.log(docRef);
+            // const docRef = await setDoc(doc(collection(db, uid, "journal", "notes")), newNote); //Añadir: Coleccion - Documento - Coleccion - Documento - Coleccion
+            // const docRef = await doc(collection(db, uid, newNote)); //Añadir: Coleccion - Documento - Coleccion - Documento - Coleccion
+           
+            const docRef = doc(collection(db, uid, "journal", "notes")); //Añadir: Coleccion - Documento - Coleccion - Documento - Coleccion
+            await setDoc(docRef, newNote);
+            // console.log(docRef);
+
+            dispatch( activeNote(docRef.id, newNote) );
+            
           } catch (e) {
             console.error("Error adding document: ", e);
           }
 
     }
 }
+
+export const activeNote = ( id, note ) => ({
+  type: types.notesActive,
+  payload: {
+    id,
+    ...note,
+  }
+})
