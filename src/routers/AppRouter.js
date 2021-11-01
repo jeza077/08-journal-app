@@ -16,6 +16,7 @@ import { auth } from '../firebase/firebaseConfig';
 
 import { login } from '../actions/auth';
 import { JournalScreen } from '../components/journal/JournalScreen';
+import { startLoadingNotes } from '../actions/notes';
 
 export const AppRouter = () => {
 
@@ -26,11 +27,14 @@ export const AppRouter = () => {
 
     useEffect(() => {
         
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async(user) => {
 
             if( user?.uid ){
                 dispatch( login( user.uid, user.displayName ) );
                 setIsLoggedIn( true );
+
+                dispatch( startLoadingNotes( user.uid ) );
+
             } else {
                 setIsLoggedIn( false );
             }
