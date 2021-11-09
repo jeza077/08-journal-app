@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { db } from '../firebase/firebaseConfig';
 import { collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { types } from '../types/types';
@@ -17,17 +18,17 @@ export const startNewNote = () => {
         }
 
         try {
-            // const docRef = await setDoc(doc(collection(db, uid, "journal", "notes")), newNote); //Añadir: Coleccion - Documento - Coleccion - Documento - Coleccion
+          // const docRef = await setDoc(doc(collection(db, uid, "journal", "notes")), newNote); //Añadir: Coleccion - Documento - Coleccion - Documento - Coleccion
 
-            const docRef = doc(collection(db, uid, "journal", "notes")); //Añadir: Coleccion - Documento - Coleccion - Documento - Coleccion
-            await setDoc(docRef, newNote);
-            // console.log(docRef);
+          const docRef = doc(collection(db, uid, "journal", "notes")); //Añadir: Coleccion - Documento - Coleccion - Documento - Coleccion
+          await setDoc(docRef, newNote);
+          // console.log(docRef);
 
-            dispatch( activeNote(docRef.id, newNote) );
+          dispatch( activeNote(docRef.id, newNote) );
 
-          } catch (e) {
-            console.error("Error adding document: ", e);
-          }
+        } catch (e) {
+          // console.error("Error adding document: ", e);
+        }
 
     }
 }
@@ -66,11 +67,39 @@ export const startSaveNote = ( note ) => {
       delete noteToFirestore.url;
     }
 
+    try {
+      
+      // const ref = doc(db, `${uid}/journal/notes/${note.id}`)
+      const ref = doc(db, uid, "journal", "notes", note.id);
+  
+      await updateDoc(ref, noteToFirestore);
+  
+      dispatch( refreshNote( note.id, noteToFirestore ) );
+  
+      Swal.fire(
+        'Saved',
+        note.title,
+        'success'
+      );
 
-    // const ref = doc(db, `${uid}/journal/notes/${note.id}`)
-    const ref = doc(db, uid, "journal", "notes", note.id);
+    } catch (e) {
+      Swal.fire(
+        'Error',
+        e,
+        'error'
+      );
+    }
 
-    await updateDoc(ref, noteToFirestore);
   }
 }
 
+export const refreshNote = ( id, note ) => ({
+  type: types.notesUpdated,
+  payload: {
+    id,
+    note: {
+      id,
+      ...note
+    }
+  }
+});
