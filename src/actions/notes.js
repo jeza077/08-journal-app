@@ -3,7 +3,9 @@ import { db } from '../firebase/firebaseConfig';
 import { collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { types } from '../types/types';
 import { loadNotes } from '../helpers/loadNotes';
+import { fileUpload } from '../helpers/fileUpload';
 
+// journal-app
 
 // Add new note
 export const startNewNote = () => {
@@ -103,3 +105,16 @@ export const refreshNote = ( id, note ) => ({
     }
   }
 });
+
+// Subir imagen a Cloudinary
+export const startUploading = ( file ) => {
+  return async (dispatch, getState) => {
+
+    const { active:activeNote } = getState().notes;
+
+    const fileUrl = await fileUpload( file );
+
+    // console.log(fileUrl)
+
+  }
+}
