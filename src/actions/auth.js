@@ -12,6 +12,7 @@ import {
 } from "../firebase/firebaseConfig";
 import { types } from "../types/types";
 import { finishLoading, startLoading } from "./ui";
+import { noteLogout } from './notes';
 
 
 
@@ -109,6 +110,7 @@ export const startLogout = () => {
         await signOut(auth);
 
         dispatch( logout() );
+        dispatch( noteLogout() );
     }
 }
 

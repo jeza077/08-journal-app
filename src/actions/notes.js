@@ -156,3 +156,8 @@ export const deleteNote = ( id ) => ({
   type: types.notesDelete, 
   payload: id
 });
+
+// Purgar notas al Cerrar Sesion
+export const noteLogout = () => ({
+  type: types.notesLogoutCleaning
+})
