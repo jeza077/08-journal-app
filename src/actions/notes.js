@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 import { db } from '../firebase/firebaseConfig';
-import { collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { types } from '../types/types';
 import { loadNotes } from '../helpers/loadNotes';
 import { fileUpload } from '../helpers/fileUpload';
@@ -132,3 +132,27 @@ export const startUploading = ( file ) => {
 
   }
 }
+
+// Eliminar nota de Firestore
+export const startDeleting = ( id ) => {
+  return async( dispatch, getState ) => {
+
+    const { uid } = getState().auth;
+
+    // const ref = doc(db, uid, "journal", "notes", note.id);
+  
+    await deleteDoc(doc(db, uid, "journal", "notes", id));
+
+    // await updateDoc(ref, noteToFirestore);
+
+    // Ejecutar para borrar la nota del Store(Redux)
+    dispatch( deleteNote(id) );
+
+  }
+}
+
+// Eliminar nota del Store (redux)
+export const deleteNote = ( id ) => ({
+  type: types.notesDelete, 
+  payload: id
+});
