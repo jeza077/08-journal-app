@@ -160,6 +160,12 @@ export const startDeleting = ( id ) => {
     // Ejecutar para borrar la nota del Store(Redux)
     dispatch( deleteNote(id) );
 
+    Swal.fire(
+      'Deleted',
+      'Note deleted',
+      'success'
+    );
+
   }
 }
 
