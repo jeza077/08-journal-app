@@ -7,7 +7,7 @@ import { fileUpload } from '../helpers/fileUpload';
 
 // journal-app
 
-// Add new note
+// Agregar nueva nota en Firestore
 export const startNewNote = () => {
     return async( dispatch, getState ) => {
 
@@ -26,7 +26,8 @@ export const startNewNote = () => {
           await setDoc(docRef, newNote);
           // console.log(docRef);
 
-          dispatch( activeNote(docRef.id, newNote) );
+          dispatch( activeNote( docRef.id, newNote) ); // Agregar nota a Firestore
+          dispatch( addNewNote( docRef.id, newNote ) ); // Agregar nota al sidebar luego de agregarla en Firestore
 
         } catch (e) {
           // console.error("Error adding document: ", e);
@@ -42,6 +43,17 @@ export const activeNote = ( id, note ) => ({
     ...note,
   }
 });
+
+
+// Agregar nueva nota en el sidebar al momento de agregarla a Firestore
+export const addNewNote = ( id, note ) => ({
+  type: types.notesAddNew,
+  payload: {
+    id, ...note
+  }
+});
+
+
 
 export const startLoadingNotes = ( uid ) => {
   return async(dispatch) => {
